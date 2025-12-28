@@ -65,7 +65,7 @@ ${constraints || "N/A"}
       body: JSON.stringify({
         model: "gpt-4.1-mini",
         input: prompt,
-        text: { format: "json_object" },
+        text: { format: { type: "json_object" } },
       }),
     });
 
