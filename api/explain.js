@@ -65,21 +65,32 @@ ${constraints || "N/A"}
       body: JSON.stringify({
         model: "gpt-4.1-mini",
         input: prompt,
+        // Force valid JSON output (Responses API expects format as an object)
         text: { format: { type: "json_object" } },
       }),
     });
 
     const data = await response.json();
 
+    // If OpenAI returns an error, surface it clearly
+    if (!response.ok) {
+      return res.status(502).json({
+        error: "OpenAI request failed",
+        status: response.status,
+        details: data,
+      });
+    }
+
+    // Responses API commonly provides output_text; keep fallback just in case
     const text =
-      data?.output_text ||
-      data?.output?.[0]?.content?.[0]?.text ||
+      data?.output_text ??
+      data?.output?.[0]?.content?.[0]?.text ??
       "";
 
     if (!text || typeof text !== "string") {
       return res.status(500).json({
         error: "Empty model output",
-        details: JSON.stringify(data)?.slice(0, 500),
+        details: data,
       });
     }
 
@@ -89,7 +100,7 @@ ${constraints || "N/A"}
     } catch (e) {
       return res.status(500).json({
         error: "Model did not return valid JSON",
-        details: text.slice(0, 800),
+        details: text.slice(0, 1200),
       });
     }
 
