@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
     if (!context || !optionA || !optionB) {
       return res.status(400).json({
-        error: "Missing required fields: context, optionA, optionB"
+        error: "Missing required fields: context, optionA, optionB",
       });
     }
 
@@ -59,28 +59,45 @@ ${constraints || "N/A"}
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${apiKey}`,
-        "Content-Type": "application/json"
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         model: "gpt-4.1-mini",
-        input: prompt
-      })
+        input: prompt,
+        text: { format: "json_object" },
+      }),
     });
 
     const data = await response.json();
+
     const text =
       data?.output_text ||
       data?.output?.[0]?.content?.[0]?.text ||
       "";
 
-    const parsed = JSON.parse(text);
+    if (!text || typeof text !== "string") {
+      return res.status(500).json({
+        error: "Empty model output",
+        details: JSON.stringify(data)?.slice(0, 500),
+      });
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(text);
+    } catch (e) {
+      return res.status(500).json({
+        error: "Model did not return valid JSON",
+        details: text.slice(0, 800),
+      });
+    }
 
     return res.status(200).json(parsed);
   } catch (err) {
     return res.status(500).json({
       error: "Failed to generate explanation",
-      details: String(err)
+      details: String(err),
     });
   }
 }
