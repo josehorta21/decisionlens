@@ -238,22 +238,23 @@ export default function App() {
             )}
           </Card>
 
-          <Card title="What makes this “FAANG signal”">
-            <div className="signal">
-              <div className="signalItem">
-                <div className="signalTop">Structured output</div>
-                <div className="mutedSmall">JSON schema for predictable downstream use.</div>
-              </div>
-              <div className="signalItem">
-                <div className="signalTop">Guardrails</div>
-                <div className="mutedSmall">Missing info + no invented facts.</div>
-              </div>
-              <div className="signalItem">
-                <div className="signalTop">Production deploy</div>
-                <div className="mutedSmall">Serverless API + env vars + Vercel.</div>
-              </div>
-            </div>
-          </Card>
+          <Card title="Engineering highlights">
+          <div className="signal">
+          <div className="signalItem">
+          <div className="signalTop">Structured outputs</div>
+          <div className="mutedSmall">JSON schema for predictable downstream use.</div>
+          </div>
+          <div className="signalItem">
+          <div className="signalTop">Safety & integrity</div>
+          <div className="mutedSmall">Explicit missing info + avoids invented facts.</div>
+         </div>
+          <div className="signalItem">
+          <div className="signalTop">Production-ready</div>
+          <div className="mutedSmall">Serverless API + env vars + CI deploy on Vercel.</div>
+         </div>
+         </div>
+       </Card>
+
         </section>
 
         <section className="right">
